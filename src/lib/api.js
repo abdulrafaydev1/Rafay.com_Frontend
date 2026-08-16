@@ -1,10 +1,12 @@
 import axios from 'axios';
 
+const DEFAULT_PRODUCTION_API_URL = 'https://rafay-com-backend.vercel.app';
+
 const normalizeBaseUrl = (value) => {
-  const trimmed = (value || 'http://localhost:5000').trim().replace(/\/+$/, '');
+  const trimmed = (value || DEFAULT_PRODUCTION_API_URL).trim().replace(/\/+$/, '');
 
   if (!trimmed) {
-    return 'http://localhost:5000';
+    return DEFAULT_PRODUCTION_API_URL;
   }
 
   if (/^https?:\/\//i.test(trimmed)) {
@@ -14,7 +16,7 @@ const normalizeBaseUrl = (value) => {
   return `https://${trimmed}`;
 };
 
-export const API_BASE_URL = normalizeBaseUrl(import.meta.env.VITE_API_URL || 'http://localhost:5000');
+export const API_BASE_URL = normalizeBaseUrl(import.meta.env.VITE_API_URL || DEFAULT_PRODUCTION_API_URL);
 
 export const api = axios.create({
   baseURL: API_BASE_URL,

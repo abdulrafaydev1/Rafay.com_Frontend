@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
+import { api, resolveImageUrl } from '../lib/api';
 import { useCart } from '../context/CartContext';
 import Newsletter from '../components/Newsletter/Newsletter';
 import Footer from '../components/Footer/Footer';
@@ -17,13 +17,6 @@ const PRICE_OPTIONS = [
 ];
 const SIZE_OPTIONS = ['all', 'XS', 'S', 'M', 'L', 'XL', '4Y', '6Y', '8Y', '10Y', '12Y', '6', '7', '8', '9', '10', '11'];
 const COLOR_OPTIONS = ['all', 'Black', 'White', 'Blue', 'Red', 'Green', 'Navy', 'Grey', 'Olive', 'Stone', 'Khaki', 'Tan', 'Cream', 'Forest', 'Sand', 'Brown', 'Gold', 'Silver', 'Ivory', 'Rose', 'Taupe', 'Pink', 'Yellow'];
-
-const resolveImageUrl = (image) => {
-  if (!image) return 'https://placehold.co/800x1000/efefef/111?text=No+Image';
-  if (image.startsWith('http://') || image.startsWith('https://')) return image;
-  if (image.startsWith('/')) return `http://localhost:5000${image}`;
-  return `http://localhost:5000/images/${image}`;
-};
 
 const getDiscountPercent = (product) => {
   if (!product || !product.oldPrice || product.oldPrice <= product.price) return null;
@@ -145,7 +138,7 @@ function ShopCategory() {
     setLoading(true);
     setError('');
 
-    axios
+    api
       .get('/api/products', { params: { ...params, category: safeCategory } })
       .then((response) => {
         const items = Array.isArray(response.data) ? response.data : [];

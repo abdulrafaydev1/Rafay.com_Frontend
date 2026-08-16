@@ -1,14 +1,7 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
+import { api, resolveImageUrl } from '../../lib/api';
 import "./topselling.css";
-
-const resolveImageUrl = (image) => {
-    if (!image) return "https://placehold.co/800x1000/efefef/111?text=No+Image";
-    if (image.startsWith("http://") || image.startsWith("https://")) return image;
-    if (image.startsWith("/")) return `http://localhost:5000${image}`;
-    return `http://localhost:5000/images/${image}`;
-};
 
 function StarRating({ rating }) {
     const fullStars = Math.floor(rating);
@@ -52,7 +45,7 @@ export default function TopSelling({ id = "sale" }) {
     const [error, setError] = useState("");
 
     useEffect(() => {
-        axios
+        api
             .get("/api/products/top-selling")
             .then((response) => {
                 setProducts(response.data || []);

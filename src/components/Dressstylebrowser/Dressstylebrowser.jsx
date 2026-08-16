@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { api, resolveImageUrl } from '../../lib/api';
 import "./browse-dress-style.css";
 
 export default function BrowseByDressStyle({ id = "factory" }) {
@@ -8,7 +8,7 @@ export default function BrowseByDressStyle({ id = "factory" }) {
     const [error, setError] = useState("");
 
     useEffect(() => {
-        axios.get("/api/products3")
+        api.get("/api/products3")
             .then((response) => {
                 setStyles(response.data);
             })
@@ -55,7 +55,7 @@ export default function BrowseByDressStyle({ id = "factory" }) {
                         >
 
                             <img
-                                src={`http://localhost:5000${style.image}`}
+                                src={resolveImageUrl(style.image)}
                                 alt={style.name}
                                 className="dress-style-image"
                             />

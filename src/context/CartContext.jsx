@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { resolveImageUrl } from '../lib/api';
 
 const CartContext = createContext(null);
 const CART_STORAGE_KEY = 'rafay-cart';
@@ -13,24 +14,7 @@ const getStoredCart = () => {
   }
 };
 
-const getProductImage = (product) => {
-  if (!product) return 'https://placehold.co/800x1000/efefef/111?text=No+Image';
-
-  if (product.image) {
-    if (product.image.startsWith('http://') || product.image.startsWith('https://')) return product.image;
-    if (product.image.startsWith('/')) return `http://localhost:5000${product.image}`;
-    return `http://localhost:5000/images/${product.image}`;
-  }
-
-  if (Array.isArray(product.images) && product.images.length) {
-    const firstImage = product.images[0];
-    if (firstImage.startsWith('http://') || firstImage.startsWith('https://')) return firstImage;
-    if (firstImage.startsWith('/')) return `http://localhost:5000${firstImage}`;
-    return `http://localhost:5000/images/${firstImage}`;
-  }
-
-  return 'https://placehold.co/800x1000/efefef/111?text=No+Image';
-};
+const getProductImage = (product) => resolveImageUrl(product?.image || (Array.isArray(product?.images) ? product.images[0] : ''));
 
 const buildCartItemKey = (product, options = {}) => {
   const itemId = product?.id ?? 'unknown';

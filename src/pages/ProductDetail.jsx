@@ -1,16 +1,9 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
 import { Link, useParams } from 'react-router-dom'
+import { api, resolveImageUrl } from '../lib/api'
 import { useCart } from '../context/CartContext'
 import ProductImageZoom from '../components/ProductImageZoom'
 import '../components/ProductDetail.css'
-
-const resolveImageUrl = (image) => {
-  if (!image) return 'https://placehold.co/800x1000/efefef/111?text=No+Image'
-  if (image.startsWith('http://') || image.startsWith('https://')) return image
-  if (image.startsWith('/')) return `http://localhost:5000${image}`
-  return `http://localhost:5000/images/${image}`
-}
 
 function ProductDetail() {
   const { productId } = useParams()
@@ -30,7 +23,7 @@ function ProductDetail() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
 
-    axios
+    api
       .get('/api/products')
       .then((response) => {
         setAllProducts(response.data || [])
@@ -39,7 +32,7 @@ function ProductDetail() {
         console.error('Failed to load product list', err)
       })
 
-    axios
+    api
       .get(`/api/products/${productId}`)
       .then((response) => {
         const item = response.data

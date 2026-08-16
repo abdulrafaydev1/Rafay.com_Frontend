@@ -1,13 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { resolveImageUrl } from '../lib/api';
 import './AddToCartToast.css';
-
-const resolveImageUrl = (image) => {
-  if (!image) return 'https://placehold.co/800x1000/efefef/111?text=No+Image';
-  if (image.startsWith('http://') || image.startsWith('https://')) return image;
-  if (image.startsWith('/')) return `http://localhost:5000${image}`;
-  return `http://localhost:5000/images/${image}`;
-};
 
 export default function AddToCartToast() {
   const navigate = useNavigate();

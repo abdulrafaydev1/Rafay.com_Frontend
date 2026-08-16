@@ -1,0 +1,314 @@
+/* =========================================
+   HAPPY CUSTOMERS
+========================================= */
+
+.happy-customers {
+    width: 100%;
+    padding: 70px 0;
+
+    overflow: hidden;
+
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+.happy-customers-header {
+    max-width: 1400px;
+
+    margin: 0 auto 28px;
+
+    padding: 0 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.happy-customers-header h2 {
+    margin: 0;
+
+    font-size: 36px;
+    font-weight: 900;
+
+    letter-spacing: -1.5px;
+
+    color: #000;
+}
+
+
+/* =========================================
+   SLIDER BUTTONS
+========================================= */
+
+.slider-buttons {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.slider-btn {
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    background: transparent;
+
+    color: #000;
+
+    font-size: 30px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        opacity 0.2s ease;
+}
+
+.slider-btn:hover {
+    transform: scale(1.15);
+}
+
+.slider-btn:active {
+    transform: scale(0.9);
+}
+
+
+/* =========================================
+   SLIDER
+========================================= */
+
+.reviews-slider {
+    width: 100%;
+
+    overflow: hidden;
+
+    cursor: grab;
+
+    user-select: none;
+
+    touch-action: pan-y;
+}
+
+.reviews-slider:active {
+    cursor: grabbing;
+}
+
+
+/* =========================================
+   TRACK
+========================================= */
+
+.reviews-track {
+    display: flex;
+
+    gap: 16px;
+
+    transition: transform 0.5s cubic-bezier(
+        0.22,
+        1,
+        0.36,
+        1
+    );
+
+    padding-left: 7%;
+}
+
+
+/* =========================================
+   REVIEW CARD
+========================================= */
+
+.review-card {
+    flex: 0 0 calc(25% - 12px);
+
+    min-height: 178px;
+
+    padding: 22px 24px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #e5e5e5;
+
+    border-radius: 18px;
+
+    background: #fff;
+
+    transition:
+        box-shadow 0.3s ease,
+        transform 0.3s ease;
+}
+
+.review-card:hover {
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.07);
+}
+
+
+/* =========================================
+   STARS
+========================================= */
+
+.review-stars {
+    margin-bottom: 12px;
+
+    color: #ffc633;
+
+    font-size: 20px;
+
+    letter-spacing: 2px;
+}
+
+
+/* =========================================
+   NAME
+========================================= */
+
+.review-name {
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+
+    margin-bottom: 8px;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    color: #111;
+}
+
+
+/* =========================================
+   VERIFIED
+========================================= */
+
+.verified {
+    width: 15px;
+    height: 15px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #00b67a;
+
+    color: white;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+/* =========================================
+   REVIEW TEXT
+========================================= */
+
+.review-text {
+    margin: 0;
+
+    color: #666;
+
+    font-size: 14px;
+
+    line-height: 1.45;
+}
+
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 1000px) {
+
+    .happy-customers-header {
+        padding: 0 30px;
+    }
+
+    .happy-customers-header h2 {
+        font-size: 30px;
+    }
+
+    .reviews-track {
+        padding-left: 5%;
+    }
+
+    .review-card {
+        flex: 0 0 calc(33.333% - 11px);
+    }
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 700px) {
+
+    .happy-customers {
+        padding: 50px 0;
+    }
+
+    .happy-customers-header {
+        padding: 0 20px;
+
+        margin-bottom: 22px;
+    }
+
+    .happy-customers-header h2 {
+        font-size: 25px;
+
+        letter-spacing: -0.8px;
+    }
+
+    .slider-buttons {
+        gap: 5px;
+    }
+
+    .slider-btn {
+        width: 35px;
+        height: 35px;
+
+        font-size: 25px;
+    }
+
+    .reviews-track {
+        padding-left: 20px;
+    }
+
+    .review-card {
+        flex: 0 0 calc(100% - 40px);
+
+        min-height: 190px;
+
+        padding: 20px;
+    }
+}
+
+
+/* =========================================
+   SMALL MOBILE
+========================================= */
+
+@media (max-width: 400px) {
+
+    .happy-customers-header h2 {
+        font-size: 21px;
+    }
+
+    .review-card {
+        flex: 0 0 calc(100% - 30px);
+    }
+}

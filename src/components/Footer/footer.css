@@ -1,0 +1,160 @@
+.site-footer {
+    margin-top: -40px;
+
+    padding: 100px 20px 25px;
+
+    background: #f2f2f2;
+}
+
+.footer-container {
+    max-width: 1200px;
+
+    margin: 0 auto;
+
+    display: grid;
+
+    grid-template-columns:
+        2fr
+        1fr
+        1fr
+        1fr
+        1fr;
+
+    gap: 50px;
+}
+
+.footer-brand h2 {
+    margin: 0 0 15px;
+
+    font-size: 25px;
+
+    font-weight: 900;
+}
+
+.footer-brand p {
+    max-width: 260px;
+
+    color: #777;
+
+    font-size: 13px;
+
+    line-height: 1.6;
+}
+
+.social-icons {
+    display: flex;
+
+    gap: 10px;
+
+    margin-top: 20px;
+}
+
+.social-icons span {
+    width: 28px;
+    height: 28px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid #ccc;
+
+    border-radius: 50%;
+
+    font-size: 8px;
+}
+
+.footer-column {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+}
+
+.footer-column h3 {
+    margin: 0 0 10px;
+
+    font-size: 13px;
+
+    letter-spacing: 1.5px;
+}
+
+.footer-column a {
+    color: #777;
+
+    text-decoration: none;
+
+    font-size: 13px;
+}
+
+.footer-column a:hover {
+    color: #000;
+}
+
+.footer-bottom {
+    max-width: 1200px;
+
+    margin: 45px auto 0;
+
+    padding-top: 20px;
+
+    border-top: 1px solid #ddd;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+}
+
+.footer-bottom p {
+    margin: 0;
+
+    color: #888;
+
+    font-size: 11px;
+}
+
+.payment-methods {
+    display: flex;
+
+    gap: 7px;
+}
+
+.payment-methods span {
+    padding: 5px 8px;
+
+    background: #fff;
+
+    border-radius: 5px;
+
+    font-size: 9px;
+}
+
+@media (max-width: 800px) {
+
+    .footer-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .footer-brand {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 500px) {
+
+    .footer-container {
+        grid-template-columns: 1fr 1fr;
+
+        gap: 35px 20px;
+    }
+
+    .footer-bottom {
+        flex-direction: column;
+
+        gap: 15px;
+    }
+}

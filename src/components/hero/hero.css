@@ -1,0 +1,156 @@
+.hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  background: #f2f0f1;
+  padding: 60px 60px 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  overflow: hidden;
+}
+
+/* Left content */
+.hero-content {
+  flex: 1;
+  max-width: 550px;
+  padding-bottom: 250px;
+}
+
+.hero-heading {
+  font-size: 54px;
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -1px;
+  color: #000;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+
+.hero-subtext {
+  font-size: 15px;
+  color: #555;
+  line-height: 1.6;
+  max-width: 460px;
+  margin-bottom: 32px;
+}
+
+.hero-cta {
+  background: #000;
+  color: #fff;
+  border: none;
+  padding: 16px 54px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 60px;
+  cursor: pointer;
+  margin-bottom: 48px;
+  transition: opacity 0.2s ease;
+}
+
+.hero-cta:hover {
+  opacity: 0.85;
+}
+
+/* Stats */
+.hero-stats {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.stat h3 {
+  font-size: 28px;
+  font-weight: 800;
+  color: #000;
+  margin: 0;
+}
+
+.stat p {
+  font-size: 13px;
+  color: #555;
+  margin-top: 4px;
+  margin-bottom: 0;
+}
+
+.divider {
+  width: 1px;
+  height: 44px;
+  background: #d1d1d1;
+}
+
+/* Right image */
+.hero-image-wrapper {
+
+  position: relative;
+  top: -30px;
+  flex: 1;
+  max-width: 560px;
+  display: flex;
+  justify-content: flex-end;
+  align-self: flex-end;
+}
+
+.hero-image {
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  object-fit: cover;
+  display: block;
+}
+
+/* Decorative stars */
+.star {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+}
+
+.star-top {
+  top: 40px;
+  right: 60px;
+}
+
+.star-bottom {
+  bottom: 140px;
+  left: -10px;
+  width: 40px;
+  height: 40px;
+}
+
+/* Responsive layout */
+@media (max-width: 900px) {
+  .hero {
+    flex-direction: column;
+    padding: 40px 24px 0;
+    text-align: center;
+  }
+
+  .hero-content {
+    max-width: 100%;
+    padding-bottom: 32px;
+    align-self: auto;
+    /* reset */
+  }
+
+  .hero-heading {
+    font-size: 36px;
+  }
+
+  .hero-subtext {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-stats {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .hero-image-wrapper {
+    max-width: 100%;
+    justify-content: center;
+  }
+
+  .star {
+    display: none;
+  }
+}

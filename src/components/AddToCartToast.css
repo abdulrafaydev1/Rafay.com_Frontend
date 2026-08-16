@@ -1,0 +1,139 @@
+.cart-toast-wrapper {
+  position: fixed;
+  right: 24px;
+  top: 24px;
+  z-index: 2000;
+  pointer-events: none;
+}
+
+.cart-toast {
+  width: min(420px, calc(100vw - 30px));
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid #ececec;
+  border-radius: 18px;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.12);
+  padding: 18px 18px 16px;
+  position: relative;
+  animation: toastSlideIn 0.28s ease forwards;
+  pointer-events: auto;
+}
+
+.cart-toast-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  color: #111111;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.cart-toast-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 1rem;
+  color: #111111;
+  margin-bottom: 14px;
+  padding-right: 28px;
+}
+
+.cart-toast-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #111111;
+  color: #ffffff;
+  font-size: 0.9rem;
+}
+
+.cart-toast-product {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.cart-toast-image {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 12px;
+  background: #f5f5f5;
+}
+
+.cart-toast-copy {
+  min-width: 0;
+}
+
+.cart-toast-copy h3 {
+  font-size: 1rem;
+  margin: 0 0 4px;
+  color: #111111;
+}
+
+.cart-toast-copy p {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #666666;
+}
+
+.cart-toast-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.cart-toast-primary,
+.cart-toast-secondary {
+  flex: 1;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.cart-toast-primary {
+  border: none;
+  background: #111111;
+  color: #ffffff;
+}
+
+.cart-toast-secondary {
+  border: 1px solid #dddddd;
+  background: #ffffff;
+  color: #111111;
+}
+
+.cart-toast-primary:hover,
+.cart-toast-secondary:hover {
+  transform: translateY(-1px);
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 640px) {
+  .cart-toast-wrapper {
+    right: 15px;
+    top: 15px;
+  }
+
+  .cart-toast-actions {
+    flex-direction: column;
+  }
+}

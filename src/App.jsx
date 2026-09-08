@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { lazy, Suspense, useState } from 'react'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import Navbar from './components/navbar/Navbar'
 import AuthModal from './components/AuthModal'
 import ScrollToTop from './components/ScrollToTop'
@@ -10,8 +10,17 @@ import ProductDetail from './pages/ProductDetail'
 import Cart from './pages/Cart'
 import AddToCartToast from './components/AddToCartToast'
 
+const AdminApp = lazy(() => import('./admin/AdminApp'))
+
 function App() {
   const [isAuthOpen, setIsAuthOpen] = useState(false)
+  const location = useLocation()
+
+  if (/^\/admin(?:\/|$)/.test(location.pathname)) {
+    return <Suspense fallback={<div role="status" style={{ padding: 40 }}>Loading admin portal…</div>}>
+      <Routes><Route path="/admin/*" element={<AdminApp />} /></Routes>
+    </Suspense>
+  }
 
   return (
     <>

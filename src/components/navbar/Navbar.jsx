@@ -111,6 +111,24 @@ export default function Navbar({ onOpenAuth }) {
         </div>
 
         <div className="icons">
+          <button
+            type="button"
+            className="store-admin-login"
+            title="Double-click to open Admin Login. Keyboard: Enter or Space."
+            onDoubleClick={() => navigate('/admin/login')}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                if (!event.repeat) navigate('/admin/login');
+              }
+            }}
+            onClick={(event) => {
+              // Keyboard and assistive technology activation have no pointer click count.
+              if (event.detail === 0) navigate('/admin/login');
+            }}
+          >
+            Admin Login
+          </button>
           <Link to="/cart" className="cart-link" aria-label="View cart">
             <svg
               width="24"

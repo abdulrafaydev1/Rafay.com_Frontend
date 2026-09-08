@@ -22,7 +22,7 @@ Open `http://localhost:5173`. Double-click **Admin Login** in the existing accou
 
 The requested credentials are configured in the ignored `backend/.env` file. They are validated by the backend and are never shown on the login page or included in the browser bundle. An example is provided in `backend/.env.example`.
 
-The existing frontend environment still points customer product requests at its existing backend URL. Admin requests use `/api/admin` through the existing Vite proxy to the local backend on port 5000. Backend startup now loads its existing `.env` with Node's built-in environment loader.
+The existing frontend environment still points customer product requests at its existing backend URL. Admin requests use `/api/admin` through the Vite proxy at `http://127.0.0.1:5000` (the port configured in `backend/.env`). Both the backend and frontend must remain running; starting Vite alone does not start the backend. Backend startup now loads its existing `.env` with Node's built-in environment loader.
 
 ## Files added
 
@@ -72,7 +72,7 @@ Public login: `/admin/login`.
 
 Protected routes:
 
-- `/admin`; `/admin/dashboard` redirects to `/admin`.
+- `/admin/dashboard`; `/admin` redirects to `/admin/dashboard`.
 - `/admin/products`.
 - `/admin/products/categories`, alias `/admin/categories`.
 - `/admin/products/inventory`, alias `/admin/inventory`.
@@ -150,3 +150,11 @@ For the existing Vercel deployment, configure the admin credentials, shared Redi
 To rerun browser checks, run the local frontend/backend and launch an isolated hidden Chrome profile with remote debugging on port 9224, then run `node admin/browser-check.mjs` from backend. The script uses that isolated profile, clears its test-origin cookies/localStorage, and writes screenshots/results to `.admin-verification/`. It uses the locally configured admin credentials; it does not embed them in frontend code. Avoid repeated full authentication runs within the login rate-limit window.
 
 Production Redis connectivity against a live provider and a live Vercel deployment were not exercised; production fail-closed behavior and cookie flags were tested locally.
+
+## Admin login repair (2026-09-08)
+
+The reproduced session request returned HTTP 502 through Vite because the backend was not running. The backend starts with `npm.cmd start` and uses port 5000 from `backend/.env` (the server's fallback without that setting is 4000). Vite now uses `http://127.0.0.1:5000` for its API and image proxy and listens on port 5173. Keep both development processes running.
+
+The admin API client maps session HTTP 401/403 and HTTP 200 with `authenticated: false` to a null session. Unexpected HTTP failures, network failures, and malformed successful sessions retain the retry UI. Requests include cookies, and successful backend sessions explicitly include `authenticated: true`. Login, authenticated login-page visits, and the old /admin address lead to /admin/dashboard. Existing route protection, server-side credentials, CSRF, cookie security, and UI styling remain intact.
+
+Run `npm.cmd test` in frontend for session-response regressions. Run `npm.cmd test` in backend for authentication/security checks. With both services and an isolated Chrome profile listening for remote debugging on port 9224, run `node admin/login-check.mjs` from backend for the focused browser acceptance test. It validates the real login/refresh/logout flow, then injects error responses only into its isolated test tab to verify expected auth states and retry recovery. Screenshots and results are saved in `../.admin-verification/login-fix-*`. The existing broader browser check remains available.

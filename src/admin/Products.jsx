@@ -1,8 +1,8 @@
 import ProductImage from './ProductImage';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link, useOutletContext, useSearchParams } from 'react-router-dom';
 import { resolveImageUrl } from '../lib/api';
-import { adminRequest, exportCsv } from './api';
+import { exportCsv } from './api';
 import { Badge, Button, Card, DataTable, Modal, Pagination, SearchInput } from './components';
 import Icon from './icons';
 
@@ -11,8 +11,6 @@ export default function Products({ mode = 'products' }) {
   const { data, notify } = useOutletContext();
   const [params, setParams] = useSearchParams();
   const [selected, setSelected] = useState(null);
-  const [catalog, setCatalog] = useState({ items: [], total: 0 });
-  const [catalogError, setCatalogError] = useState('');
   const search = params.get('q') || '';
   const category = params.get('category') || '';
   const sort = params.get('sort') || 'name';
@@ -20,20 +18,8 @@ export default function Products({ mode = 'products' }) {
   const setFilter = (key, value) => { const next = new URLSearchParams(params); if (value) next.set(key, String(value)); else next.delete(key); next.delete('page'); setParams(next, { replace: true }); };
   const titles = { products: ['Products', 'The same products your customers browse in the storefront.'], inventory: ['Inventory', 'Product variants and stock visibility across your catalog.'], discounts: ['Discounts & Coupons', 'Active product markdowns from the storefront catalog.'], reviews: ['Reviews', 'Product rating summaries available in your store catalog.'] };
   const [title, subtitle] = titles[mode];
-  useEffect(() => {
-    if (mode !== 'products') return undefined;
-    const controller = new AbortController();
-    const query = new URLSearchParams({ page: String(Number(params.get('page')) || 1), limit: String(pageSize), sort });
-    if (search) query.set('q', search);
-    if (category) query.set('category', category);
-    adminRequest(`/catalog?${query}`, { signal: controller.signal })
-      .then((result) => { if (!controller.signal.aborted) { setCatalog({ items: result.items, total: result.total }); setCatalogError(''); } })
-      .catch((error) => { if (!controller.signal.aborted) setCatalogError(error.message); });
-    return () => controller.abort();
-  }, [category, mode, pageSize, params, search, sort]);
   const rows = data.products.filter((product) => (!search || `${product.id} ${product.name} ${product.category}`.toLowerCase().includes(search.toLowerCase())) && (!category || product.category === category) && (mode !== 'discounts' || product.oldPrice > product.price))
     .sort((a, b) => sort === 'price-low' ? a.price - b.price : sort === 'price-high' ? b.price - a.price : sort === 'popular' ? b.salesCount - a.salesCount : sort === 'rating' ? b.rating - a.rating : a.name.localeCompare(b.name));
-  const visibleRows = mode === 'products' ? catalog.items : rows;
   const page = Math.min(Math.max(1, Math.floor(Number(params.get('page')) || 1)), Math.max(1, Math.ceil(rows.length / pageSize)));
   const productColumn = { key: 'name', label: 'Product', render: (product) => <span className="ad-product-cell"><ProductImage loading="lazy" src={resolveImageUrl(product.image)} alt="" /><span><strong>{product.name}</strong><small>Product ID: {product.id}</small></span></span> };
   const columns = [productColumn, { key: 'category', label: 'Category', render: (product) => <span className="ad-capitalize">{product.category}</span> },
@@ -54,13 +40,13 @@ export default function Products({ mode = 'products' }) {
   ];
   const exportProducts = () => {
     exportCsv(`${mode}.csv`, ['Product ID', 'Name', 'Category', 'Price USD', 'Previous Price USD', 'Rating', 'Review Count', 'Sizes', 'Colors', 'Inventory'],
-      visibleRows.map((product) => [product.id, product.name, product.category, product.price, product.oldPrice, product.rating, product.reviews, product.sizes.join('; '), product.colors.join('; '), 'Not tracked']));
-    notify(`Exported ${visibleRows.length} products.`);
+      rows.map((product) => [product.id, product.name, product.category, product.price, product.oldPrice, product.rating, product.reviews, product.sizes.join('; '), product.colors.join('; '), 'Not tracked']));
+    notify(`Exported ${rows.length} products.`);
   };
   return <div className="ad-stack"><section className="ad-page-heading"><div><h1>{title}</h1><p>{subtitle}</p></div><Button icon="download" onClick={exportProducts} disabled={!rows.length}>Export CSV</Button></section>
     <div className="ad-summary-strip"><div><span>Catalog products</span><strong>{data.catalog.count}</strong></div><div><span>Categories</span><strong>{data.catalog.categories.length}</strong></div><div><span>Average price</span><strong>{money(data.catalog.averagePrice)}</strong></div><div><span>{mode === 'reviews' ? 'Catalog reviews' : 'Discounted products'}</span><strong>{mode === 'reviews' ? data.catalog.reviewCount.toLocaleString() : data.catalog.discountedCount}</strong></div></div>
-    <div className="ad-notice"><Icon name="help" size={17} /><span>{catalogError || (mode === 'inventory' ? 'Stock quantities and SKUs are not tracked. Available sizes and colors are shown from the product catalog.' : mode === 'reviews' ? 'These are catalog rating summaries. Individual review text and moderation are not available.' : mode === 'discounts' ? 'Product markdowns are shown here. Coupon management is not connected.' : 'Catalog viewing is available. Product creation and editing are not enabled for this store.')}</span></div>
-    <Card className="ad-product-table"><div className="ad-table-toolbar"><SearchInput label="Search products" placeholder="Search product name, ID, category…" value={search} onChange={(value) => setFilter('q', value)} /><label className="ad-filter"><Icon name="filter" size={15} /><select aria-label="Filter by category" value={category} onChange={(event) => setFilter('category', event.target.value)}><option value="">All categories</option>{data.catalog.categories.map((name) => <option key={name} value={name}>{name}</option>)}</select></label><select aria-label="Sort products" value={sort} onChange={(event) => setFilter('sort', event.target.value)}><option value="name">Name: A–Z</option><option value="price-low">Price: low to high</option><option value="price-high">Price: high to low</option><option value="popular">Catalog sales count</option><option value="rating">Highest rated</option></select>{(search || category) && <Button onClick={() => setParams({})}>Clear filters</Button>}<Badge>{mode === 'products' ? catalog.total : rows.length} products</Badge></div><DataTable caption={title} columns={columns} rows={mode === 'products' ? visibleRows : visibleRows.slice((page - 1) * pageSize, page * pageSize)} onRowClick={setSelected} emptyTitle="No products found" emptyDescription="Try another search or clear your filters." /><Pagination total={mode === 'products' ? catalog.total : rows.length} page={page} pageSize={pageSize} onPageChange={(value) => { const next = new URLSearchParams(params); next.set('page', String(value)); setParams(next, { replace: true }); }} onPageSizeChange={(value) => setFilter('size', value)} /></Card>
+    <div className="ad-notice"><Icon name="help" size={17} /><span>{mode === 'inventory' ? 'Stock quantities and SKUs are not tracked. Available sizes and colors are shown from the product catalog.' : mode === 'reviews' ? 'These are catalog rating summaries. Individual review text and moderation are not available.' : mode === 'discounts' ? 'Product markdowns are shown here. Coupon management is not connected.' : 'Catalog viewing is available. Product creation and editing are not enabled for this store.'}</span></div>
+    <Card className="ad-product-table"><div className="ad-table-toolbar"><SearchInput label="Search products" placeholder="Search product name, ID, category…" value={search} onChange={(value) => setFilter('q', value)} /><label className="ad-filter"><Icon name="filter" size={15} /><select aria-label="Filter by category" value={category} onChange={(event) => setFilter('category', event.target.value)}><option value="">All categories</option>{data.catalog.categories.map((name) => <option key={name} value={name}>{name}</option>)}</select></label><select aria-label="Sort products" value={sort} onChange={(event) => setFilter('sort', event.target.value)}><option value="name">Name: A–Z</option><option value="price-low">Price: low to high</option><option value="price-high">Price: high to low</option><option value="popular">Catalog sales count</option><option value="rating">Highest rated</option></select>{(search || category) && <Button onClick={() => setParams({})}>Clear filters</Button>}<Badge>{rows.length} products</Badge></div><DataTable caption={title} columns={columns} rows={rows.slice((page - 1) * pageSize, page * pageSize)} onRowClick={setSelected} emptyTitle="No products found" emptyDescription="Try another search or clear your filters." /><Pagination total={rows.length} page={page} pageSize={pageSize} onPageChange={(value) => { const next = new URLSearchParams(params); next.set('page', String(value)); setParams(next, { replace: true }); }} onPageSizeChange={(value) => setFilter('size', value)} /></Card>
     {selected && <Modal wide title="Product details" onClose={() => setSelected(null)}><div className="ad-product-detail"><ProductImage className="ad-detail-image" src={resolveImageUrl(selected.image)} alt={selected.name} /><div><Badge tone="success">Published catalog</Badge><h3>{selected.name}</h3><p className="ad-detail-price">{money(selected.price)} {selected.oldPrice && <del>{money(selected.oldPrice)}</del>}</p><p>{selected.description}</p><dl><div><dt>Product ID</dt><dd>{selected.id}</dd></div><div><dt>Category</dt><dd className="ad-capitalize">{selected.category}</dd></div><div><dt>Sizes</dt><dd>{selected.sizes.join(', ') || '—'}</dd></div><div><dt>Colors</dt><dd>{selected.colors.join(', ') || '—'}</dd></div><div><dt>Rating</dt><dd>{selected.rating} / 5 · {selected.reviews} catalog reviews</dd></div><div><dt>Inventory</dt><dd>Not tracked</dd></div></dl><Link to={`/product/${selected.id}`} target="_blank" rel="noreferrer" className="ad-button ad-primary">View in storefront <Icon name="arrow" size={14} /></Link></div></div></Modal>}
   </div>;
 }

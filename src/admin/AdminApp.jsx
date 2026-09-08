@@ -18,14 +18,14 @@ export default function AdminApp() {
   const location = useLocation();
   const verify = useCallback(async (signal) => {
     try { setSession(await adminRequest('/session', { signal })); setError(''); }
-    catch (err) { if (err.name === 'AbortError') return; if (err.status === 401) setSession(null); else { setSession(null); setError(err.message); } }
+    catch (err) { if (err.name === 'AbortError') return; if (err.status === 401 || err.status === 403) { setSession(null); setError(''); } else { setSession(null); setError(err.message); } }
     finally { if (!signal?.aborted) setChecking(false); }
   }, []);
   useEffect(() => {
     const controller = new AbortController();
     adminRequest('/session', { signal: controller.signal })
       .then((value) => { if (!controller.signal.aborted) setSession(value); })
-      .catch((err) => { if (!controller.signal.aborted && err.status !== 401) setError(err.message); })
+      .catch((err) => { if (!controller.signal.aborted && err.status !== 401 && err.status !== 403) setError(err.message); })
       .finally(() => { if (!controller.signal.aborted) setChecking(false); });
     return () => controller.abort();
   }, []);
